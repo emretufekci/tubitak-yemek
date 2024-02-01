@@ -10,6 +10,8 @@ Currently, the extension offers the following options:
 - **Gebze Salata**: Displays the salad options available at the Gebze location.
 - **Gebze Akşam**: Displays the dinner menu at the Gebze location.
 
+<img width="594" alt="code-ext" src="https://github.com/emretufekci/tubitak-yemek/assets/23323000/cd2767fe-9f81-42eb-b3f5-55e42fb7f568">
+
 ## How to Use
 
 1. Install the extension in Visual Studio Code.
