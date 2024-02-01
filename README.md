@@ -1,4 +1,4 @@
-# TÜBİTAK Yemek Extension
+# TÜBİTAK Yemek VSCode Extension
 
 This Visual Studio Code extension provides quick access to TÜBİTAK (The Scientific and Technological Research Council of Turkey) meal menus for lunch and dinner.
 
