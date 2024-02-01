@@ -2,6 +2,9 @@
 
 This Visual Studio Code extension provides quick access to TÜBİTAK (The Scientific and Technological Research Council of Turkey) meal menus for lunch and dinner.
 
+![code-ext-exp](https://github.com/emretufekci/tubitak-yemek/assets/23323000/b08aaa30-1b3d-41ec-8834-914fa0074a1b)
+
+
 ## Features
 
 Currently, the extension offers the following options:
@@ -9,8 +12,6 @@ Currently, the extension offers the following options:
 - **Gebze Öğlen**: Displays the lunch menu at the Gebze location.
 - **Gebze Salata**: Displays the salad options available at the Gebze location.
 - **Gebze Akşam**: Displays the dinner menu at the Gebze location.
-
-<img width="594" alt="code-ext" src="https://github.com/emretufekci/tubitak-yemek/assets/23323000/cd2767fe-9f81-42eb-b3f5-55e42fb7f568">
 
 ## How to Use
 
