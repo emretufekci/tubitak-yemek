@@ -1,0 +1,104 @@
+#!/bin/python3
+
+# Karahanlı sadakatini takdir ediyor.
+
+import argparse
+import requests
+from requests_ntlm import HttpNtlmAuth
+import urllib3
+from datetime import datetime
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    
+MENU_URL = ''
+AUTH_URL = ''
+DOMAIN = ""
+USERNAME = ""
+PASSWORD = ""
+KAMPUS = ""
+
+def printer(data):
+    data = data.get("YemekListesi")
+    for i in data:
+        print(i,  end="\n")
+
+def getOgle(menu):
+    for data in menu:
+        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 1):
+            printer(data)
+
+def getSalat(menu):
+    for data in menu:
+        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 5):
+            printer(data)
+
+def getDiet(menu):
+    for data in menu:
+        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 3):
+            printer(data)
+
+def getAksam(menu):
+    for data in menu:
+        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 2):
+            printer(data)
+
+def getVeg(menu):
+    for data in menu:
+        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 6):
+            printer(data)
+
+def getMenu(auth):
+
+    bearer_token = auth.get("Data").get("Token")
+    headers = {
+        'Authorization': f'Bearer {bearer_token}',
+    }
+    current_date = datetime.now()
+    formatted_date = current_date.strftime("%d-%m-%Y")
+
+    data = {
+        "tarih": formatted_date
+    }
+    response = requests.post(MENU_URL, headers=headers, json=data,verify=False)
+    if response.status_code == 200:
+        return response.json()
+
+
+
+def login():
+    username_domain = f'{DOMAIN}\\{USERNAME}'
+
+    # Send a GET request with NTLM authentication
+    response = requests.get(AUTH_URL, auth=HttpNtlmAuth(username_domain, PASSWORD), verify=False)
+    if response.status_code == 200:
+        return response.json()
+
+def main():
+    parser = argparse.ArgumentParser(description="Tubitak günün yemek menüsü cli uygulaması")
+    subparsers = parser.add_subparsers(dest="command", help="Subcommands")
+
+    oglen_parser = subparsers.add_parser("ogle", help="Öğlen menü için")
+    aksam_parser = subparsers.add_parser("aksam", help="Akşam menü")
+    salata_parser = subparsers.add_parser("salata", help="Salatabar menü için")
+    diyet_parser = subparsers.add_parser("diyet", help="Diyet menü için")
+    vej_parser = subparsers.add_parser("vej", help="Vegan menü için")
+    args = parser.parse_args()
+
+    auth = login()
+    menu = getMenu(auth)
+
+    if args.command == "aksam":
+        getAksam(menu)
+    elif args.command == "ogle":
+        getOgle(menu)
+    elif args.command == "salata":
+        getSalat(menu)
+    elif args.command == "diyet":
+        getDiet(menu)
+    elif args.command == "vej":
+        getVeg(menu)
+    elif args.command == None:
+        getOgle(menu)
+
+if __name__ == "__main__":
+    main()
