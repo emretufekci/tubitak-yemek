@@ -9,7 +9,7 @@ import urllib3
 from datetime import datetime
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    
+
 MENU_URL = ''
 AUTH_URL = ''
 DOMAIN = ""
@@ -17,38 +17,20 @@ USERNAME = ""
 PASSWORD = ""
 KAMPUS = ""
 
+
 def printer(data):
     data = data.get("YemekListesi")
     for i in data:
-        print(i,  end="\n")
+        print(i, end="\n")
 
-def getOgle(menu):
+
+def filter_menu(menu, menu_type):
     for data in menu:
-        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 1):
+        if (data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == menu_type):
             printer(data)
 
-def getSalat(menu):
-    for data in menu:
-        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 5):
-            printer(data)
-
-def getDiet(menu):
-    for data in menu:
-        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 3):
-            printer(data)
-
-def getAksam(menu):
-    for data in menu:
-        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 2):
-            printer(data)
-
-def getVeg(menu):
-    for data in menu:
-        if(data.get("Lokasyon") == KAMPUS and data.get("YemekMenusuTuru") == 6):
-            printer(data)
 
 def getMenu(auth):
-
     bearer_token = auth.get("Data").get("Token")
     headers = {
         'Authorization': f'Bearer {bearer_token}',
@@ -59,10 +41,9 @@ def getMenu(auth):
     data = {
         "tarih": formatted_date
     }
-    response = requests.post(MENU_URL, headers=headers, json=data,verify=False)
+    response = requests.post(MENU_URL, headers=headers, json=data, verify=False)
     if response.status_code == 200:
         return response.json()
-
 
 
 def login():
@@ -73,32 +54,34 @@ def login():
     if response.status_code == 200:
         return response.json()
 
+
 def main():
     parser = argparse.ArgumentParser(description="Tubitak günün yemek menüsü cli uygulaması")
     subparsers = parser.add_subparsers(dest="command", help="Subcommands")
 
-    oglen_parser = subparsers.add_parser("ogle", help="Öğlen menü için")
-    aksam_parser = subparsers.add_parser("aksam", help="Akşam menü")
-    salata_parser = subparsers.add_parser("salata", help="Salatabar menü için")
-    diyet_parser = subparsers.add_parser("diyet", help="Diyet menü için")
-    vej_parser = subparsers.add_parser("vej", help="Vegan menü için")
+    subparsers.add_parser("ogle", help="Öğlen menü için")
+    subparsers.add_parser("aksam", help="Akşam menü")
+    subparsers.add_parser("salata", help="Salatabar menü için")
+    subparsers.add_parser("diyet", help="Diyet menü için")
+    subparsers.add_parser("vej", help="Vegan menü için")
     args = parser.parse_args()
 
     auth = login()
     menu = getMenu(auth)
 
     if args.command == "aksam":
-        getAksam(menu)
+        filter_menu(menu, 2)
     elif args.command == "ogle":
-        getOgle(menu)
+        filter_menu(menu, 1)
     elif args.command == "salata":
-        getSalat(menu)
+        filter_menu(menu, 5)
     elif args.command == "diyet":
-        getDiet(menu)
+        filter_menu(menu, 3)
     elif args.command == "vej":
-        getVeg(menu)
-    elif args.command == None:
-        getOgle(menu)
+        filter_menu(menu, 6)
+    elif args.command is None:
+        filter_menu(menu, 1)  # Default to Öğlen menu
+
 
 if __name__ == "__main__":
     main()
